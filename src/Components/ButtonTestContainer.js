@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Link1 from './Link1'
 
 class ButtonTestContainer extends Component {
 
@@ -17,8 +18,13 @@ class ButtonTestContainer extends Component {
         })
     }
 
+    getdata = (state) => {
+        this.setState(prevState => {
+            return { ...prevState, link1: state }
+        });
+    }
+
     render() {
-        console.log(this.state)
         return (
             <div>
                 <ul className="nav">
@@ -26,10 +32,10 @@ class ButtonTestContainer extends Component {
                         <a className="nav-link" href="#" onClick={e => this.handleClick("nav1")}>Comp1</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#" onClick={e => this.handleClick("nav2")}>Comp1</a>
+                        <a className="nav-link" href="#" onClick={e => this.handleClick("nav2")}>Comp2</a>
                     </li>
                 </ul>
-                
+                {this.state.link === 'nav1' ? <Link1 localState={this.state.link1} propagateState={this.getdata} /> : ''}
             </div>
         )
     }

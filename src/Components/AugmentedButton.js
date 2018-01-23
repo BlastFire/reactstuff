@@ -2,16 +2,15 @@ import React, { Component } from 'react'
 
 class AugmentedButton extends Component {
 
-    handleChange = (e) => {
-        console.log(`${e.target.value} ${e.target.checked}`)
-    }
-
     render() {
 
-        const { btnVal } = this.props
+        const { btnVal, handleChange, checked } = this.props
 
         return (
-            <input type="checkbox" value={btnVal} onChange={this.handleChange} />
+            <div>
+                <input id={btnVal} type="checkbox" defaultChecked={checked} value={btnVal} onChange={handleChange} />
+                <label htmlFor={btnVal}>{btnVal}</label>
+            </div>
         )
     }
 }
