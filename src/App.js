@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import ButtonTestContainer from './Components/ButtonTestContainer'
+// import ButtonTestContainer from './Components/ManageStateInContainerUgly/ButtonTestContainer'
 
 class App extends Component {
   render() {
     return (
-      <ButtonTestContainer />
+      // <ButtonTestContainer />
+      <h1>next</h1>
     )
   }
 }
