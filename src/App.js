@@ -14,14 +14,17 @@ class App extends Component {
       // <ButtonTestContainer />
 
       //Used patterns Render Props and Props Collections
-      <SwitchWrapper toggle={this.swFn} render={({ on, handleToggle, togglerProps }) => (
+      <SwitchWrapper toggle={this.swFn} render={({ on, handleToggle, getTogglerProps }) => (
         <div>
           <Switch
             on={on}
-            {...togglerProps}
+            {...getTogglerProps() }
           />
           <hr />
-          <button {...togglerProps} >
+          <button
+            {...getTogglerProps({
+              onClick: () => alert('hi')
+            }) }>
             {on ? 'On' : 'Off'}
           </button>
         </div>

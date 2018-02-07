@@ -16,15 +16,23 @@ class SwitchWrapper extends Component {
         )
     }
 
+    getTogglerProps = ({ onClick, ...props } = {}) => {
+        return {
+            'aria-expanded': this.state.on,
+            onClick: (...args) => {
+                onClick && onClick(...args)
+                this.handleToggle(...args)
+            },
+            ...props
+        }
+    }
+
     render() {
         const { render } = this.props
         return render({
             on: this.state.on,
             handleToggle: this.handleToggle,
-            togglerProps: {
-                'aria-expanded': this.state.on,
-                onClick: this.handleToggle
-            }
+            getTogglerProps: this.getTogglerProps
         })
     }
 }
