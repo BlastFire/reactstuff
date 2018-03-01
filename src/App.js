@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SwitchWrapper from './Components/RenderPropsPattern/SwitchWrapper'
 import SwitchWrapper2 from './Components/ControlPropsPattern/SwitchWrapper2'
 import Switch from './Components/RenderPropsPattern/Switch'
+import StreamAppEntry from './Components/StreamingComponents/StreamAppEntry'
 
 class App extends Component {
 
@@ -12,6 +13,10 @@ class App extends Component {
 
   render() {
     return (
+
+      <StreamAppEntry />
+
+
       // <ButtonTestContainer />
 
       //Used patterns Render Props and Props Collections
@@ -33,14 +38,13 @@ class App extends Component {
       )} />
       */
 
-      <SwitchWrapper2 render={({ on, getTogglerProps }) => (
-        <div>
-          <Switch on={on} {...getTogglerProps() } />
-          <hr />
-          <button {...getTogglerProps() } > {on ? 'on' : 'off'}</button>
-        </ div>
-      )} />
-
+      // <SwitchWrapper2 render={({ on, getTogglerProps }) => (
+      //   <div>
+      //     <Switch on={on} {...getTogglerProps() } />
+      //     <hr />
+      //     <button {...getTogglerProps() } > {on ? 'on' : 'off'}</button>
+      //   </ div>
+      // )} />
     )
   }
 }

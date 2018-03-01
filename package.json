@@ -19,6 +19,7 @@
     "react-scripts": "1.0.13",
     "react-stars": "^2.2.5",
     "reactstrap": "^5.0.0-alpha.4",
+    "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-auth-wrapper": "^2.0.2",
     "redux-devtools-extension": "^2.13.2",
