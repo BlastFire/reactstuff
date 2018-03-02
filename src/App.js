@@ -4,6 +4,7 @@ import SwitchWrapper from './Components/RenderPropsPattern/SwitchWrapper'
 import SwitchWrapper2 from './Components/ControlPropsPattern/SwitchWrapper2'
 import Switch from './Components/RenderPropsPattern/Switch'
 import StreamAppEntry from './Components/StreamingComponents/StreamAppEntry'
+import RPSEntry from './Components/RockPaperScissor/RPSEntry'
 
 class App extends Component {
 
@@ -14,8 +15,9 @@ class App extends Component {
   render() {
     return (
 
-      <StreamAppEntry />
+      <RPSEntry />
 
+      // <StreamAppEntry />
 
       // <ButtonTestContainer />
 

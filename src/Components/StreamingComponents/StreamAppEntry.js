@@ -14,10 +14,10 @@ const StreamAppEntry = props => {
             {/* <S5TypeWriter message="Rxjs Streaming Component" speed={1000} /> */}
             {/* <S6SwapiCo id={1} /> */}
             {/* <S8Counter value={3} /> */}
-            <S9Counter value={3}>
+            {/* <S9Counter value={3}>
                 <CounterPure />
                 <CounterPure />
-            </S9Counter>
+            </S9Counter> */}
         </div>
     )
 }
