@@ -6,16 +6,6 @@ import registerServiceWorker from './registerServiceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
 
 ReactDOM.render(
-    <div
-        style={{
-            marginTop: 40,
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            textAlign: 'center',
-        }}
-    >
-        <App />
-    </div>,
+    <App />,
     document.getElementById('root'));
 registerServiceWorker();
