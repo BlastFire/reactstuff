@@ -56,11 +56,18 @@ const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleR
                 }}>
                     <h1>EnemyBox</h1>
                     {aiCounter && <h2>{aiCounter}</h2>}
+                    {aiAction && <h2>{aiAction}</h2>}
                 </div>
 
             </div>
         </div>
     )
+}
+
+const getRandomPick = () => {
+    const pick = ['rock', 'paper', 'scissors']
+    const index = Math.floor(Math.random() * 3 + 0);
+    return pick[index]
 }
 
 const RPSControlsStream = componentFromStream(props$ => {
@@ -79,16 +86,16 @@ const RPSControlsStream = componentFromStream(props$ => {
         return ({ counter: internalCounter, loadingClick: true, loadingReset, handleClick, handleReset, choiceHandler, ...props })
     }).take(3)
 
-    const enemyInterval = (pVal, props) => Observable.interval(props.speed).startWith(0).map(counter => {
+    const enemyInterval = (pVal, props) => Observable.interval(props.speed/2).startWith(0).map(counter => {
         aiCounter += 1
-        aiAction = aiCounter === 5 ? 'done' : ''
+        aiAction = aiCounter === 3 ? getRandomPick() : ''
         return ({ ...props, aiAction, aiCounter, counter: 0, loadingClick: true, loadingReset: true, choice: pVal, choiceHandler })
     }).take(3)
 
     return props$.switchMap(props => {
         return Observable.merge(
             handleClick$
-                .switchMap(e => startInterval(e.target.value, props))
+                .switchMap(e => startInterval(props))
                 .startWith({ counter: 0, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, ...props })
                 .takeUntil(choiceHandler$),
             handleReset$
@@ -97,7 +104,7 @@ const RPSControlsStream = componentFromStream(props$ => {
                     return ({ counter: 0, loadingClick: false, loadingReset: false, handleClick, handleReset, choiceHandler, ...props })
                 }),
             choiceHandler$
-                .switchMap(e => enemyInterval(props))
+                .switchMap(e => enemyInterval(e.target.value, props))
         )
     }).map(RPSControls)
 })

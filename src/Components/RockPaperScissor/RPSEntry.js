@@ -13,7 +13,7 @@ class RPSEntry extends Component {
 
 
         return (
-            <RPSControlsStream speed={5000} />
+            <RPSControlsStream speed={4000} />
         )
     }
 }
