@@ -8,8 +8,8 @@ setObservableConfig(rxjsConfig)
 
 
 
-const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, choice }) => {
-    
+const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, choice, aiAction, aiCounter }) => {
+
     let pbbLoading = !loadingClick
 
     if (counter === 3) {
@@ -55,6 +55,7 @@ const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleR
                     border: '1px solid black'
                 }}>
                     <h1>EnemyBox</h1>
+                    {aiCounter && <h2>{aiCounter}</h2>}
                 </div>
 
             </div>
@@ -69,16 +70,25 @@ const RPSControlsStream = componentFromStream(props$ => {
     let internalCounter = 0
     let loadingClick = false
     let loadingReset = false
+    let aiCounter = 0
+    let aiAction = ''
 
-    const interval = (props) => Observable.interval(props.speed).startWith(0).map(counter => {
+    const startInterval = props => Observable.interval(props.speed).startWith(0).map(counter => {
         internalCounter += 1
         loadingReset = internalCounter === 3 ? false : true
         return ({ counter: internalCounter, loadingClick: true, loadingReset, handleClick, handleReset, choiceHandler, ...props })
     }).take(3)
-    return props$.switchMap((props) => {
+
+    const enemyInterval = (pVal, props) => Observable.interval(props.speed).startWith(0).map(counter => {
+        aiCounter += 1
+        aiAction = aiCounter === 5 ? 'done' : ''
+        return ({ ...props, aiAction, aiCounter, counter: 0, loadingClick: true, loadingReset: true, choice: pVal, choiceHandler })
+    }).take(3)
+
+    return props$.switchMap(props => {
         return Observable.merge(
             handleClick$
-                .switchMap(e => interval(props))
+                .switchMap(e => startInterval(e.target.value, props))
                 .startWith({ counter: 0, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, ...props })
                 .takeUntil(choiceHandler$),
             handleReset$
@@ -87,7 +97,7 @@ const RPSControlsStream = componentFromStream(props$ => {
                     return ({ counter: 0, loadingClick: false, loadingReset: false, handleClick, handleReset, choiceHandler, ...props })
                 }),
             choiceHandler$
-                .map(e => ({ ...props, counter: 0, loadingClick: true, loadingReset: true, choice: e.target.value, choiceHandler }))
+                .switchMap(e => enemyInterval(props))
         )
     }).map(RPSControls)
 })
