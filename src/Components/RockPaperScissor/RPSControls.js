@@ -3,12 +3,13 @@ import rxjsConfig from 'recompose/rxjsObservableConfig'
 import { setObservableConfig, createEventHandler, componentFromStream, withState } from 'recompose'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/add/operator/switchMap'
+import { calculateWinner } from './Engine/GameEngine'
 setObservableConfig(rxjsConfig)
 
 
 
 
-const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, choice, aiAction, aiCounter }) => {
+const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, choice, aiAction, aiCounter, winner }) => {
 
     let pbbLoading = !loadingClick
 
@@ -58,7 +59,15 @@ const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleR
                     {aiCounter && <h2>{aiCounter}</h2>}
                     {aiAction && <h2>{aiAction}</h2>}
                 </div>
-
+            </div>
+            <div style={{
+                marginTop: 40,
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                textAlign: 'center',
+            }}>
+                {winner && <h2>Winner is {winner}</h2>}
             </div>
         </div>
     )
@@ -79,6 +88,7 @@ const RPSControlsStream = componentFromStream(props$ => {
     let loadingReset = false
     let aiCounter = 0
     let aiAction = ''
+    let winner = ''
 
     const startInterval = props => Observable.interval(props.speed).startWith(0).map(counter => {
         internalCounter += 1
@@ -86,10 +96,11 @@ const RPSControlsStream = componentFromStream(props$ => {
         return ({ counter: internalCounter, loadingClick: true, loadingReset, handleClick, handleReset, choiceHandler, ...props })
     }).take(3)
 
-    const enemyInterval = (pVal, props) => Observable.interval(props.speed/2).startWith(0).map(counter => {
+    const enemyInterval = (pVal, props) => Observable.interval(props.speed / 2).startWith(0).map(counter => {
         aiCounter += 1
         aiAction = aiCounter === 3 ? getRandomPick() : ''
-        return ({ ...props, aiAction, aiCounter, counter: 0, loadingClick: true, loadingReset: true, choice: pVal, choiceHandler })
+        winner = aiCounter === 3 ? calculateWinner(pVal, aiAction) : ''
+        return ({ ...props, winner, aiAction, aiCounter, counter: 0, loadingClick: true, loadingReset: true, choice: pVal, choiceHandler })
     }).take(3)
 
     return props$.switchMap(props => {
