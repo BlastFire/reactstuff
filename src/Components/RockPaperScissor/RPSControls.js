@@ -9,13 +9,7 @@ setObservableConfig(rxjsConfig)
 
 
 
-const RPSControls = ({ counter, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, choice, aiAction, aiCounter, winner }) => {
-
-    let pbbLoading = !loadingClick
-
-    if (counter === 3) {
-        pbbLoading = true
-    }
+const RPSControls = ({ counter, pbbLoading, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, choice, aiAction, aiCounter, winner }) => {
 
     return (
         <div>
@@ -89,10 +83,13 @@ const RPSControlsStream = componentFromStream(props$ => {
     let aiCounter = 0
     let aiAction = ''
     let winner = ''
+    let pbbLoading = true
 
     const startInterval = props => Observable.interval(props.speed).startWith(0).map(counter => {
+        console.log("start")
         internalCounter += 1
         loadingReset = internalCounter === 3 ? false : true
+        pbbLoading = false
         return ({ counter: internalCounter, loadingClick: true, loadingReset, handleClick, handleReset, choiceHandler, ...props })
     }).take(3)
 
@@ -100,14 +97,16 @@ const RPSControlsStream = componentFromStream(props$ => {
         aiCounter += 1
         aiAction = aiCounter === 3 ? getRandomPick() : ''
         winner = aiCounter === 3 ? calculateWinner(pVal, aiAction) : ''
-        return ({ ...props, winner, aiAction, aiCounter, counter: 0, loadingClick: true, loadingReset: true, choice: pVal, choiceHandler })
+        loadingReset = aiCounter === 3 ? false : true
+        pbbLoading = true
+        return ({ ...props, pbbLoading, winner, aiAction, aiCounter, counter: 0, loadingClick: true, handleReset, loadingReset, choice: pVal, choiceHandler })
     }).take(3)
 
     return props$.switchMap(props => {
         return Observable.merge(
             handleClick$
                 .switchMap(e => startInterval(props))
-                .startWith({ counter: 0, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, ...props })
+                .startWith({ counter: 0, pbbLoading, loadingClick, loadingReset, handleClick, handleReset, choiceHandler, ...props })
                 .takeUntil(choiceHandler$),
             handleReset$
                 .map(e => {
